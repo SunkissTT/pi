@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daejun's Raspberry Pi</title>
+    <style>
+        body, html {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            margin: 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Daejun's Raspberry Pi server.</h1>
+    <p>This server provides Korean-English translation and Chatbot services.</p>
+<!--
+    <button onclick="location.href='ko2en.html'">Korean-English</button>
+    <button onclick="location.href='chat.html'">Chatbot</button>
+-->
+
+    <div class="button-container">
+        <button onclick="runTrigger()">Run Trigger Script</button>
+
+    <div id="output"></div>
+
+    <script>
+        function runTrigger() {
+            fetch('/run-script', {
+                method: 'POST'
+            }).then(response => response.text())
+              .then(data => {
+                  document.getElementById('output').innerHTML = data;
+              });
+        }
+    </script>
+</body>
+</html>
