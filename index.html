@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Test</title>
+    <style>
+        .disabled-button {
+            background-color: red;
+        }
+    </style>
+    <script>
+        function startTest() {
+            // 'Download Log' 버튼 비활성화 및 스타일 변경
+            const downloadButton = document.getElementById('downloadButton');
+            downloadButton.classList.add('disabled-button');
+            downloadButton.disabled = true;
+
+            // 30초 후에 버튼 활성화 및 스타일 복원
+            setTimeout(() => {
+                downloadButton.classList.remove('disabled-button');
+                downloadButton.disabled = false;
+            }, 30000); // 30초 (밀리초 단위)
+
+            // 기존의 fetch 로직
+            fetch('/start_test', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Test started:", data);
+                    document.getElementById('logFilename').innerText = `Log Filename: ${data.filename}`;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function stopTestAndDownloadLog() {
+            fetch('/stop_test', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Test stopped:", data);
+                    const filename = document.getElementById('logFilename').innerText.split(': ')[1];
+                    if (filename) {
+                        window.location.href = `/get_log/${filename}`;
+                    } else {
+                        alert("No log file to download.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Network Test</h1>
+    <button onclick="startTest()">Test Start(30s)</button>
+    <button id="downloadButton" onclick="stopTestAndDownloadLog()">Download Log</button> 
+    <p id="logFilename"></p>
+</body>
+</html>
